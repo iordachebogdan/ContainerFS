@@ -3,18 +3,9 @@
 #include <fcntl.h>
 #include <stdlib.h>
 
-#define FUSE_USE_VERSION 31
-#include <fuse.h>
-#include <zip.h>
-
 #include "utility.h"
 #include "data.h"
-
-#include "readdir.h"
-
-struct fuse_operations FZIP_OPERATIONS = {
-    .readdir = fzip_readdir,
-};
+#include "fzip.h"
 
 int main(int argc, char** argv) {
     if (argc < 2) {

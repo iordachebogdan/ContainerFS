@@ -1,12 +1,6 @@
-#ifndef _READDIR_H_
-#define _READDIR_H_
+#include "fzip.h"
 
-#include <errno.h>
-
-#include <fuse.h>
-#include <zip.h>
-
-#include "data.h"
+#include <stdio.h>
 
 int fzip_readdir(const char* path, void* buf, fuse_fill_dir_t filler,
                  off_t offset, struct fuse_file_info* fi,
@@ -15,5 +9,3 @@ int fzip_readdir(const char* path, void* buf, fuse_fill_dir_t filler,
     printf("readdir: %s, offset = %lu\n", path, offset);
     return 0;
 }
-
-#endif

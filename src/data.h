@@ -1,10 +1,8 @@
-#ifndef _DIRTREE_H_
-#define _DIRTREE_H_
+#ifndef _DATA_H_
+#define _DATA_H_
 
 struct fzip_data {};
 
-int build_tree(const char* path, struct fzip_data* data) {
-    return 0;
-}
+int build_tree(const char*, struct fzip_data*);
 
 #endif
