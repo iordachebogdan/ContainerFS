@@ -1,4 +1,5 @@
 #include "dir_tree.h"
+#include "utility.h"
 
 #include <stdlib.h>
 
@@ -53,34 +54,17 @@ int create_tree(const char* path, struct DirTree** root_) {
 }
 
 int destroy_tree(struct DirTree* root) {
-    if (root == NULL) {
-        return EXIT_SUCCESS;
-    }
-
-    struct List {
-        struct DirTree* data;
-        struct List* next;
-    };
-
-    struct List* head = malloc(sizeof(struct List));
-    *head = (struct List){.data = root, .next = NULL};
+    struct List* head = NULL;
+    push_front(&head, root);
 
     while (head != NULL) {
         struct DirTree* node = head->data;
-        struct List* old_head = head;
-        head = head->next;
-
-        free(old_head);
-
-        struct DirTree* chk[2] = {node->son, node->next};
-        for (int t = 0; t < 2; ++t) {
-            if (chk[t] != NULL) {
-                struct List* new_head = malloc(sizeof(struct List));
-                *new_head = (struct List){.data = chk[t], .next = head};
-                head = new_head;
-            }
+        pop_front(&head);
+        if (node != NULL) {
+            push_front(&head, node->son);
+            push_front(&head, node->next);
+            free(node);
         }
-        free(node);
     }
     return EXIT_SUCCESS;
 }

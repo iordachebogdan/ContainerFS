@@ -25,12 +25,12 @@ target_link_libraries(dir_tree ${LIBZIP_LIBRARIES})
 add_library(data STATIC src/data.c)
 target_link_libraries(data dir_tree)
 
-# Fzip main library
-add_library(fzip STATIC src/fzip.c src/readdir.c)
-target_link_libraries(fzip data ${FUSE3_LIBRARIES})
-
 # Utility library
 add_library(utility STATIC src/utility.c)
+
+# Fzip main library
+add_library(fzip STATIC src/fzip.c src/readdir.c)
+target_link_libraries(fzip ${FUSE3_LIBRARIES} data)
 
 # Executable
 add_executable(zipfs src/main.c)
