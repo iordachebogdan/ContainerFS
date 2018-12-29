@@ -8,20 +8,23 @@
 #include "fzip.h"
 
 int main(int argc, char** argv) {
+    // Objects that need to be destoyed manually
+    struct FzipData* data = NULL;
+    char** fuse_argv = NULL;
+
+    int result;
     if (argc < 2) {
         errno = EINVAL;
-        return EXIT_FAILURE;
-    }
-
-    struct FzipData* data;
-    int result;
-    if (!create(argv[1], &data)) {
         result = EXIT_FAILURE;
         goto exit;
     }
 
+    if ((result = create(argv[1], &data))) {
+        goto exit;
+    }
+
     // discard argv[1]
-    char** fuse_argv = malloc(argc - 1);
+    fuse_argv = malloc(argc - 1);
     if (!fuse_argv) {
         result = EXIT_FAILURE;
         goto exit;
@@ -35,7 +38,11 @@ int main(int argc, char** argv) {
     result = fuse_main(argc - 1, fuse_argv, &FZIP_OPERATIONS, data);
 
 exit:
-    destroy(&data);
+    destroy(data);
     FREE(fuse_argv);
+
+    if (result) {
+        perror("");
+    }
     return result;
 }

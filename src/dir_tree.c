@@ -52,8 +52,8 @@ int create_tree(const char* path, struct DirTree** root_) {
     return EXIT_SUCCESS;
 }
 
-int destroy_tree(struct DirTree** root) {
-    if (*root == NULL) {
+int destroy_tree(struct DirTree* root) {
+    if (root == NULL) {
         return EXIT_SUCCESS;
     }
 
@@ -63,7 +63,7 @@ int destroy_tree(struct DirTree** root) {
     };
 
     struct List* head = malloc(sizeof(struct List));
-    *head = (struct List){.data = *root, .next = NULL};
+    *head = (struct List){.data = root, .next = NULL};
 
     while (head != NULL) {
         struct DirTree* node = head->data;
@@ -82,6 +82,18 @@ int destroy_tree(struct DirTree** root) {
         }
         free(node);
     }
-    *root = NULL;
     return EXIT_SUCCESS;
+}
+
+struct DirTree* find(struct DirTree* root, const char* path) {
+    int i = 0;
+    while (root && path[i]) {
+        struct DirTree* it = root->son;
+        while (it != NULL && it->ch != path[i]) {
+            it = it->next;
+        }
+        root = it;
+        ++i;
+    }
+    return root;
 }

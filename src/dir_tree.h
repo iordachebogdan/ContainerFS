@@ -8,6 +8,7 @@ struct DirTree {
 };
 
 int create_tree(const char*, struct DirTree**);
-int destroy_tree(struct DirTree**);
+int destroy_tree(struct DirTree*);
+struct DirTree* find(struct DirTree*, const char*);
 
 #endif

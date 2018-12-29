@@ -8,6 +8,6 @@ struct FzipData {
 };
 
 int create(const char*, struct FzipData**);
-int destroy(struct FzipData**);
+int destroy(struct FzipData*);
 
 #endif

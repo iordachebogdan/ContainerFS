@@ -11,9 +11,12 @@ int create(const char* path, struct FzipData** data_) {
     return EXIT_SUCCESS;
 }
 
-int destroy(struct FzipData** data_) {
-    struct FzipData* data = *data_;
-    if (destroy_tree(&data->tree)) {
+int destroy(struct FzipData* data) {
+    if (data == NULL) {
+        return EXIT_SUCCESS;
+    }
+
+    if (destroy_tree(data->tree)) {
         return EXIT_FAILURE;
     }
     free(data);
