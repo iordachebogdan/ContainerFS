@@ -2,7 +2,10 @@ cmake_minimum_required(VERSION 3.13.1)
 project(ContainerFS)
 
 # Load libzip
-find_package(ZLIB)
+find_path(LIBZIP_INCLUDE_DIRS "zip/zip.h")
+set(LIBZIP_INCLUDE_DIRS "${LIBZIP_INCLUDE_DIRS}/zip")
+find_library(LIBZIP_LIBRARIES zip)
+message("-- Found LIBZIP: ${LIBZIP_LIBRARIES}")
 
 # Load fuse3
 find_path(FUSE3_INCLUDE_DIRS "fuse3/fuse.h")
@@ -11,16 +14,20 @@ find_library(FUSE3_LIBRARIES fuse3)
 message("-- Found FUSE3: ${FUSE3_LIBRARIES}")
 
 # Set include directories
-file(GLOB FZIP_INCLUDE_DIRS "src/*.h")
-include_directories(include ${FZIP_INCLUDE_DIRS} ${FUSE3_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS})
+set(FZIP_INCLUDE_DIRS "src/")
+include_directories(include ${FZIP_INCLUDE_DIRS} ${FUSE3_INCLUDE_DIRS} ${LIBZIP_INCLUDE_DIRS})
+
+# DirTree library
+add_library(dir_tree STATIC src/dir_tree.c)
+target_link_libraries(dir_tree ${LIBZIP_LIBRARIES})
 
 # Shared data library
 add_library(data STATIC src/data.c)
-target_link_libraries(data ${ZLIB_LIBRARIES})
+target_link_libraries(data dir_tree)
 
 # Fzip main library
 add_library(fzip STATIC src/fzip.c src/readdir.c)
-target_link_libraries(fzip data ${ZLIB_LIBRARIES} ${FUSE3_LIBRARIES})
+target_link_libraries(fzip data ${FUSE3_LIBRARIES})
 
 # Utility library
 add_library(utility STATIC src/utility.c)

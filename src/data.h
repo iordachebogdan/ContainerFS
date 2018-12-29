@@ -1,8 +1,13 @@
 #ifndef _DATA_H_
 #define _DATA_H_
 
-struct fzip_data {};
+#include "dir_tree.h"
 
-int build_tree(const char*, struct fzip_data*);
+struct FzipData {
+    struct DirTree* tree;
+};
+
+int create(const char*, struct FzipData**);
+int destroy(struct FzipData**);
 
 #endif

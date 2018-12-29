@@ -13,9 +13,9 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    struct fzip_data* data = malloc(sizeof(struct fzip_data));
+    struct FzipData* data;
     int result;
-    if (!data || build_tree(argv[1], data)) {
+    if (!create(argv[1], &data)) {
         result = EXIT_FAILURE;
         goto exit;
     }
@@ -35,6 +35,7 @@ int main(int argc, char** argv) {
     result = fuse_main(argc - 1, fuse_argv, &FZIP_OPERATIONS, data);
 
 exit:
-    FREE(data, fuse_argv);
+    destroy(&data);
+    FREE(fuse_argv);
     return result;
 }
