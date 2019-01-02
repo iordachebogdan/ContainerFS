@@ -2,6 +2,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <zip.h>
 
 #include "utility.h"
 #include "data.h"
@@ -10,36 +11,24 @@
 int main(int argc, char** argv) {
     // Objects that need to be destoyed manually
     struct FzipData* data = NULL;
-    char** fuse_argv = NULL;
+    struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
+
+    struct Options options;
+    options.filename = strdup("archive.zip");
+    if (fuse_opt_parse(&args, &options, option_spec, NULL) == -1) {
+        return EXIT_FAILURE;
+    }
 
     int result;
-    if (argc < 2) {
-        errno = EINVAL;
-        result = EXIT_FAILURE;
+    if ((result = create(argv[1], &data, &options))) {
         goto exit;
     }
 
-    if ((result = create(argv[1], &data))) {
-        goto exit;
-    }
-
-    // discard argv[1]
-    fuse_argv = malloc(argc - 1);
-    if (!fuse_argv) {
-        result = EXIT_FAILURE;
-        goto exit;
-    }
-
-    fuse_argv[0] = argv[0];
-    for (int i = 1; i < argc - 1; ++i) {
-        fuse_argv[i] = argv[i + 1];
-    }
-
-    result = fuse_main(argc - 1, fuse_argv, &FZIP_OPERATIONS, data);
+    result = fuse_main(args.argc, args.argv, &FZIP_OPERATIONS, data);
+    fuse_opt_free_args(&args);
 
 exit:
     destroy(data);
-    FREE(fuse_argv);
 
     if (result) {
         perror("");

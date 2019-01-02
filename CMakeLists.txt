@@ -29,7 +29,10 @@ target_link_libraries(data dir_tree)
 add_library(utility STATIC src/utility.c)
 
 # Fzip main library
-add_library(fzip STATIC src/fzip.c src/readdir.c)
+add_library(fzip STATIC src/fzip.c
+                        src/init.c
+                        src/readdir.c
+                        src/getattr.c)
 target_link_libraries(fzip ${FUSE3_LIBRARIES} data)
 
 # Executable
