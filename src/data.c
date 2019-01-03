@@ -8,14 +8,24 @@ int create(const char* path, struct FzipData** data_) {
             || create_tree(path, &data->tree)) {
         return EXIT_FAILURE;
     }
-    int result;
+    int result = 0;
     data->archive = zip_open(path, ZIP_RDONLY, &result);
     if (result != 0) {
         if (result == ZIP_ER_NOENT) {
             printf("The zip file doesn't exists\n");
+        } else if (result == ZIP_ER_EXISTS){
+            printf("Exists\n");
+        } else if (result == ZIP_ER_INCONS) {
+            printf("Inconsistences\n");
+        } else {
+            printf("Unknown error: %s\n", path);
+            printf("%d\n", result);
         }
         return EXIT_FAILURE;
+    } else {
+        printf("Opened archive: %s\n", path);
     }
+    *data_ = data;
     return EXIT_SUCCESS;
 }
 

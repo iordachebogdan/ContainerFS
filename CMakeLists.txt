@@ -32,7 +32,9 @@ add_library(utility STATIC src/utility.c)
 add_library(fzip STATIC src/fzip.c
                         src/init.c
                         src/readdir.c
-                        src/getattr.c)
+                        src/getattr.c
+                        src/read.c
+                        src/open.c)
 target_link_libraries(fzip ${FUSE3_LIBRARIES} data)
 
 # Executable

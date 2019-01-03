@@ -24,6 +24,7 @@ int fzip_readdir(const char* path, void* buf, fuse_fill_dir_t filler,
                  off_t offset, struct fuse_file_info* fi,
                  enum fuse_readdir_flags flags) {
     (void)offset; (void)fi; (void)flags;
+    printf("Reading dir: %s\n", path);
 
     struct DirTree* node;
     if (*path == 0 || (node = find(get_data()->tree, path)) == NULL) {
@@ -46,6 +47,7 @@ int fzip_readdir(const char* path, void* buf, fuse_fill_dir_t filler,
         if (state->node == NULL) {
             buff[state->length] = 0;
             filler(buf, buff, NULL, 0, 0);
+            printf("Filler call: %s\n", buff);
         } else {
             if (node->next != NULL) {
                 push_front(&head, create_data(node->next, state->length));
