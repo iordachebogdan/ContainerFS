@@ -7,7 +7,7 @@ int fzip_getattr(const char* path, struct stat* stbuf,
                  struct fuse_file_info* fi) {
     (void) fi;
     zip_t* archive = get_data()->archive;
-    memset(stbuf, 0, sizeof(stbuf));
+    memset(stbuf, 0, sizeof(struct stat));
     if (strcmp(path, "/") == 0) {
         // Read and execute permissions for directories
 		stbuf->st_mode = S_IFDIR | 0555;

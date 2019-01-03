@@ -8,7 +8,7 @@ int create(const char* path, struct FzipData** data_) {
             || create_tree(path, &data->tree)) {
         return EXIT_FAILURE;
     }
-    int result;
+    int result = 0;
     data->archive = zip_open(path, ZIP_RDONLY, &result);
     if (result != 0) {
         if (result == ZIP_ER_NOENT) {
