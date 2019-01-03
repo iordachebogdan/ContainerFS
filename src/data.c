@@ -2,14 +2,14 @@
 
 #include <stdlib.h>
 
-int create(const char* path, struct FzipData** data_, struct Options* options) {
+int create(const char* path, struct FzipData** data_) {
     struct FzipData* data = *data_;
     if (!(data = malloc(sizeof(struct FzipData)))
             || create_tree(path, &data->tree)) {
         return EXIT_FAILURE;
     }
     int result;
-    data->archive = zip_open(options->filename, ZIP_RDONLY, &result);
+    data->archive = zip_open(path, ZIP_RDONLY, &result);
     if (result != 0) {
         if (result == ZIP_ER_NOENT) {
             printf("The zip file doesn't exists\n");

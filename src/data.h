@@ -10,7 +10,7 @@ struct FzipData {
     zip_t* archive;
 };
 
-int create(const char*, struct FzipData**, struct Options*);
+int create(const char*, struct FzipData**);
 int destroy(struct FzipData*);
 
 #endif

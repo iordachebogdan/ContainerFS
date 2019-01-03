@@ -14,3 +14,11 @@ struct fuse_operations FZIP_OPERATIONS = {
 struct FzipData* get_data() {
     return (struct FzipData*)fuse_get_context()->private_data;
 }
+
+int get_zip_error(zip_t* archive) {
+    zip_error_t* ze = zip_get_error(archive);
+    if (ze == NULL) {
+        return 0;
+    }
+    return zip_error_code_zip(ze);
+}

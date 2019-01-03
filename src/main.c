@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
     }
 
     int result;
-    if ((result = create(argv[1], &data, &options))) {
+    if ((result = create(options.filename, &data))) {
         goto exit;
     }
 
