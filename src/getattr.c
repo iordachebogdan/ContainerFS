@@ -35,11 +35,14 @@ int fzip_getattr(const char* path, struct stat* stbuf,
     if (opsys != ZIP_OPSYS_UNIX) {
         return -ENOTSUP;
     }
-    mode_t mode = (mode_t) attributes;
+    printf("%d\n", attributes);
+    mode_t mode = (mode_t) ((attributes >> 16) & 0xFFFF);
+    printf("%d\n", mode);
     if ((mode & S_IFMT) == S_IFDIR) {
         // Read and execute permissions for directories
         stbuf->st_mode = S_IFDIR | 0555;
         stbuf->st_nlink = 2;
+        printf("Directory\n");
     } else {
         // Read permissions mainly for other kind of files
         stbuf->st_mode = (mode & S_IFMT) | 0444;
@@ -50,5 +53,11 @@ int fzip_getattr(const char* path, struct stat* stbuf,
             (mode & S_IXOTH);
         stbuf->st_nlink = 1;
     }
+    if ((mode & S_IFMT) == S_IFREG) {
+        stbuf->st_size = stat.size;
+        printf("Reg file\n");
+    }
+    printf("Getattr succes\n");
+    printf("Mode: %d\n", stbuf->st_mode);
     return 0;
 }

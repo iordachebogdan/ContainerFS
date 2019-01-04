@@ -24,10 +24,10 @@ int fzip_readdir(const char* path, void* buf, fuse_fill_dir_t filler,
                  off_t offset, struct fuse_file_info* fi,
                  enum fuse_readdir_flags flags) {
     (void)offset; (void)fi; (void)flags;
-    printf("Reading dir: %s\n", path);
 
+    printf("[readdir] %s\n", path);
     struct DirTree* node;
-    if (*path == 0 || (node = find(get_data()->tree, path)) == NULL) {
+    if (*path == 0 || (node = find(get_data()->tree, path + 1)) == NULL) {
         return -ENOENT;
     }
 
@@ -35,29 +35,35 @@ int fzip_readdir(const char* path, void* buf, fuse_fill_dir_t filler,
     filler(buf, "..", NULL, 0, 0);
 
     char buff[MAX_PATH];
-    int path_len = strlen(path);
-    memcpy(buff, path, path_len);
+    int path_length = strlen(path);
+    memcpy(buff, path, path_length);
 
     struct List* head = NULL;
-    push_front(&head, create_data(node->son, path_len));
+    push_front(&head, create_data(node->son, path_length));
     while (head != NULL) {
         struct DfsData* state = head->data;
         pop_front(&head);
 
-        if (state->node == NULL) {
+        node = state->node;
+        if (node == NULL) {
             buff[state->length] = 0;
-            filler(buf, buff, NULL, 0, 0);
-            printf("Filler call: %s\n", buff);
+
+            struct stat st;
+            fzip_getattr(buff, &st, 0);
+            filler(buf, buff + path_length, &st, 0, 0);
+
+            printf("Filler call: %s\n", buff + path_length);
         } else {
             if (node->next != NULL) {
                 push_front(&head, create_data(node->next, state->length));
             }
             buff[state->length] = node->ch;
-            push_front(&head, create_data(node->son, state->length + 1));
+            push_front(&head, (node->ch != '/') ? create_data(node->son, state->length + 1)
+                                                : create_data(NULL, state->length));
         }
 
         free(state);
     }
 
-    return EXIT_SUCCESS;
+    return 0;
 }
