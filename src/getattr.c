@@ -17,15 +17,40 @@ int fzip_getattr(const char* path, struct stat* stbuf,
 	}
 
     zip_stat_t stat;
+    int found = 0;
+    // Search as a file
     if (zip_stat(archive, path + 1, 0, &stat) != 0) {
         int ze = get_zip_error(archive);
         zip_error_clear(archive);
         switch (ze) {
-            case ZIP_ER_INVAL: return -EINVAL;
             case ZIP_ER_MEMORY: return -ENOMEM;
-            case ZIP_ER_NOENT: return -ENOENT;
+            case ZIP_ER_INVAL: return -EINVAL;
+            case ZIP_ER_NOENT: break;
             default: exit(EXIT_FAILURE);
         }
+    } else {
+        printf("Found the first time\n");
+    }
+    // Search as a directory - with '/' at the end of 'path'
+    if (!found) {
+        printf("Not found the first time\n");
+        int len = strlen(path);
+        char* dir_path = malloc(len + 2);
+        strcpy(dir_path, path);
+        dir_path[len] = '/';
+        dir_path[len + 1] = '\0';
+        int res = zip_stat(archive, dir_path + 1, 0, &stat);
+        free(dir_path);
+        if (res != 0) {
+            int ze = get_zip_error(archive);
+            zip_error_clear(archive);
+            switch (ze) {
+                case ZIP_ER_MEMORY: return -ENOMEM;
+                case ZIP_ER_INVAL: return -EINVAL;
+                case ZIP_ER_NOENT: return -ENOENT;
+                default: exit(EXIT_FAILURE);
+            }
+        }    
     }
     zip_uint8_t opsys;
     zip_uint32_t attributes;
