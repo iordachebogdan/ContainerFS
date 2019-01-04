@@ -11,6 +11,7 @@ struct fuse_operations FZIP_OPERATIONS = {
     .getattr = fzip_getattr,
     .open = fzip_open,
     .read = fzip_read,
+    .readlink = fzip_readlink,
 };
 
 struct FzipData* get_data() {
