@@ -65,7 +65,6 @@ int fzip_readdir(const char* path, void* buf, fuse_fill_dir_t filler,
                 push_front(&head, create_data(node->next, state->length));
             }
             buff[state->length] = node->ch;
-
             push_front(&head, (node->ch != '/') ? create_data(node->son, state->length + 1)
                                                 : create_data(NULL, state->length));
         }
