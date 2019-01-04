@@ -10,10 +10,10 @@ int fzip_getattr(const char* path, struct stat* stbuf,
     memset(stbuf, 0, sizeof(struct stat));
     if (strcmp(path, "/") == 0) {
         // Read and execute permissions for directories
-		stbuf->st_mode = S_IFDIR | 0555;
-		stbuf->st_nlink = 2;
+        stbuf->st_mode = S_IFDIR | 0555;
+        stbuf->st_nlink = 2;
         return 0;
-	}
+    }
 
     zip_stat_t stat;
     if (zip_stat(archive, path + 1, 0, &stat) != 0) {

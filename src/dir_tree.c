@@ -20,6 +20,8 @@ void insert(struct DirTree** root, const char* file) {
         *root = create_node(NULL, NULL, 0, -1);
     }
 
+    printf("[dir_tree] Inserting %s\n", file);
+
     struct DirTree* node = *root;
     for (int i = 0; file[i]; ++i) {
         ++node->size;
