@@ -34,7 +34,7 @@ int fzip_getattr(const char* path, struct stat* stbuf,
     if (opsys != ZIP_OPSYS_UNIX) {
         return -ENOTSUP;
     }
-    mode_t mode = (mode_t) attributes;
+    mode_t mode = (mode_t) ((attributes >> 16) & 0xFFFF);
     if ((mode & S_IFMT) == S_IFDIR) {
         // Read and execute permissions for directories
         stbuf->st_mode = S_IFDIR | 0555;
