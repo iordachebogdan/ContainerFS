@@ -9,6 +9,8 @@ struct fuse_operations FZIP_OPERATIONS = {
     .init = fzip_init,
     .readdir = fzip_readdir,
     .getattr = fzip_getattr,
+    .open = fzip_open,
+    .read = fzip_read,
 };
 
 struct FzipData* get_data() {

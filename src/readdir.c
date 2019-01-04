@@ -10,8 +10,7 @@
 #define MAX_PATH 256
 
 struct DfsData {
-    struct DirTree* node;
-    int length;
+    struct DirTree* node; int length;
 };
 
 struct DfsData* create_data(struct DirTree* node, int length) {
@@ -25,18 +24,24 @@ int fzip_readdir(const char* path, void* buf, fuse_fill_dir_t filler,
                  enum fuse_readdir_flags flags) {
     (void)offset; (void)fi; (void)flags;
 
-    printf("[readdir] %s\n", path);
+    char buff[MAX_PATH];
+    int path_length = strlen(path);
+    memcpy(buff, path, path_length);
+    if (path_length > 1) {
+        buff[path_length++] = '/';
+    }
+    buff[path_length] = 0;
+
+    printf("[readdir] %s %d\n", buff + 1, strlen(buff + 1));
+
     struct DirTree* node;
-    if (*path == 0 || (node = find(get_data()->tree, path + 1)) == NULL) {
+    if (*buff == 0 || (node = find(get_data()->tree, buff + 1)) == NULL) {
+        printf("[readdir] Failed\n");
         return -ENOENT;
     }
 
     filler(buf, ".", NULL, 0, 0);
     filler(buf, "..", NULL, 0, 0);
-
-    char buff[MAX_PATH];
-    int path_length = strlen(path);
-    memcpy(buff, path, path_length);
 
     struct List* head = NULL;
     push_front(&head, create_data(node->son, path_length));
@@ -46,13 +51,15 @@ int fzip_readdir(const char* path, void* buf, fuse_fill_dir_t filler,
 
         node = state->node;
         if (node == NULL) {
-            buff[state->length] = 0;
+            if (path_length < state->length) {
+                buff[state->length] = 0;
 
-            struct stat st;
-            fzip_getattr(buff, &st, 0);
-            filler(buf, buff + path_length, &st, 0, 0);
+                struct stat st;
+                fzip_getattr(buff, &st, 0);
+                filler(buf, buff + path_length, &st, 0, 0);
 
-            printf("Filler call: %s\n", buff + path_length);
+                printf("Filler call: %s\n", buff + path_length);
+            }
         } else {
             if (node->next != NULL) {
                 push_front(&head, create_data(node->next, state->length));
