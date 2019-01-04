@@ -29,6 +29,7 @@ int fzip_getattr(const char* path, struct stat* stbuf,
             default: exit(EXIT_FAILURE);
         }
     } else {
+        found = 1;
         printf("Found the first time\n");
     }
     // Search as a directory - with '/' at the end of 'path'
