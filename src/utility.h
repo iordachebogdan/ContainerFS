@@ -2,6 +2,7 @@
 #define _UTILITY_H_
 
 #define FREE(...) variadic_free(count_arguments(#__VA_ARGS__), __VA_ARGS__)
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 struct List {
     void* data;
