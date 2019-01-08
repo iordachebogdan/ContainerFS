@@ -3,7 +3,6 @@
 
 #include <zip.h>
 #include "dir_tree.h"
-#include "fzip.h"
 
 struct FzipData {
     struct DirTree* tree;

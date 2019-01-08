@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(ContainerFS)
+set (CMAKE_C_STANDARD 11)
 
 # Load libzip
 find_path(LIBZIP_INCLUDE_DIRS "zip/zip.h")

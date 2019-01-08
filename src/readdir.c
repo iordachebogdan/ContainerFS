@@ -32,7 +32,7 @@ int fzip_readdir(const char* path, void* buf, fuse_fill_dir_t filler,
     }
     buff[path_length] = 0;
 
-    printf("[readdir] %s %d\n", buff + 1, strlen(buff + 1));
+    printf("[readdir] %s %ld\n", buff + 1, strlen(buff + 1));
 
     struct DirTree* node;
     if (*buff == 0 || (node = find(get_data()->tree, buff + 1)) == NULL) {
