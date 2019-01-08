@@ -7,6 +7,7 @@ int fzip_read(const char* path, char* buff, size_t size,
         off_t offset, struct fuse_file_info* fi) {
     printf("Reading: %s\n", path);
 
+    //skip first offset bytes
     char* offset_buff[MAX_READ_BUFF];
     zip_file_t* file = (zip_file_t*)(fi->fh);
     while (offset > 0) {

@@ -51,7 +51,7 @@ int fzip_getattr(const char* path, struct stat* stbuf,
                 case ZIP_ER_NOENT: return -ENOENT;
                 default: exit(EXIT_FAILURE);
             }
-        }    
+        }
     }
     zip_uint8_t opsys;
     zip_uint32_t attributes;

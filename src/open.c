@@ -9,6 +9,7 @@ int fzip_open(const char *path, struct fuse_file_info *fi) {
         return -ENOENT;
     }
 
+    //locate file
     zip_uint64_t index = zip_name_locate(archive, path + 1, 0);
     if (index == -1) {
         int ze = get_zip_error(archive);
@@ -22,6 +23,7 @@ int fzip_open(const char *path, struct fuse_file_info *fi) {
     }
     printf("File was found\n");
 
+    //open file
     zip_file_t* file = zip_fopen_index(archive, index, 0);
     if (file == NULL) {
         int ze = get_zip_error(archive);
@@ -41,6 +43,7 @@ int fzip_open(const char *path, struct fuse_file_info *fi) {
     }
     printf("File was opened\n");
 
+    //set file handle
     fi->fh = (uint64_t)file;
 
     return 0;
