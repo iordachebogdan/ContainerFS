@@ -43,13 +43,18 @@ int create_tree(const char* path, struct DirTree** root_) {
     *root_ = NULL;
 
     struct zip* zip_file;
-    if (!(zip_file = zip_open(path, ZIP_CREATE, 0))) {
+    if (!(zip_file = zip_open(path, ZIP_RDONLY, 0))) {
         return EXIT_FAILURE;
     }
 
     zip_int64_t num_entries = zip_get_num_entries(zip_file, 0);
     for (zip_int64_t i = 0; i < num_entries; ++i) {
         insert(root_, zip_get_name(zip_file, i, ZIP_FL_ENC_RAW));
+    }
+
+    if (zip_close(zip_file)) {
+        zip_discard(zip_file);
+        return EXIT_FAILURE;
     }
 
     return EXIT_SUCCESS;
