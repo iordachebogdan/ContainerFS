@@ -8,27 +8,10 @@ int fzip_read(const char* path, char* buff, size_t size,
     printf("Reading: %s\n", path);
 
     //skip first offset bytes
-    char* offset_buff[MAX_READ_BUFF];
     zip_file_t* file = (zip_file_t*)(fi->fh);
-    while (offset > 0) {
-        zip_int64_t bytes_to_read = MIN(offset, MAX_READ_BUFF);
-        offset -= bytes_to_read;
-        zip_int64_t read_bytes;
-        while (bytes_to_read > 0
-            && (read_bytes = zip_fread(file, offset_buff, bytes_to_read)) > 0) {
-            bytes_to_read -= read_bytes;
-        }
-        if (bytes_to_read == 0)
-            continue;
-        memset(buff, 0, size);
-        if (read_bytes == 0) {
-            //offset too big
-            return -EINVAL;
-        }
-        if (read_bytes < 0) {
-            //error while reading
-            return -EIO;
-        }
+    if (zip_fseek(file, (zip_int64_t)offset, SEEK_SET)) {
+        //error while seeking
+        return -ENOTSUP;
     }
 
     char* pos_in_buff = buff;
