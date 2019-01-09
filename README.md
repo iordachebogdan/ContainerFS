@@ -14,13 +14,13 @@ make
 ```
 
 ## Roadmap
-- [ ] getattr
-- [ ] readlink
-- [ ] open
-- [ ] read
+- [x] getattr
+- [x] readlink
+- [x] open
+- [x] read
 - [x] readdir
 - [ ] release
-- [ ] init
+- [x] init
 
 ## Testing
 - [ ] Zips with deep directory structure
