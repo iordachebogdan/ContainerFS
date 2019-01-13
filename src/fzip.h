@@ -13,6 +13,11 @@ struct Options {
     const char* filename;
 };
 
+struct FileHandle {
+  zip_file_t* file;
+  struct DirTree* node;
+};
+
 #define OPTION(t, p)                           \
     { t, offsetof(struct Options, p), 1 }
 const struct fuse_opt option_spec[2];

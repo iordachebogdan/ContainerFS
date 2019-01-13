@@ -5,6 +5,9 @@ struct DirTree {
     struct DirTree* son, *next;
     int size;
     char ch;
+    int open_count;
+    char* file_data;
+    int file_data_size;
 };
 
 int create_tree(const char*, struct DirTree**);

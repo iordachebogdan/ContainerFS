@@ -1,16 +1,37 @@
 #include "fzip.h"
 #include "utility.h"
 #include <errno.h>
-#define MAX_READ_BUFF 1024
 
 int fzip_read(const char* path, char* buff, size_t size,
         off_t offset, struct fuse_file_info* fi) {
-    printf("Reading: %s\n", path);
+    printf("[read] Reading %ld bytes with offset %ld from: %s\n", size, offset, path);
 
+    memset(buff, 0, size);
+    struct FileHandle* fh = (struct FileHandle*)(fi->fh);
+
+    if (fh->node->file_data != NULL) {
+        printf("[read] File is stored. Read from Memory\n");
+        if (offset > fh->node->file_data_size) {
+            //offset too big, nothing to read
+            return 0;
+        }
+        if (offset + size > fh->node->file_data_size) {
+            //read less than size
+            memcpy(buff, fh->node->file_data + offset, fh->node->file_data_size - offset);
+            return fh->node->file_data_size - offset;
+        } else {
+            //read size bytes
+            memcpy(buff, fh->node->file_data + offset, size);
+            return size;
+        }
+    }
+
+    printf("[read] File is not stored. Try reading directly\n");
     //skip first offset bytes
     zip_file_t* file = (zip_file_t*)(fi->fh);
-    if (zip_fseek(file, (zip_int64_t)offset, SEEK_SET)) {
+    if (offset > 0 && zip_fseek(file, (zip_int64_t)offset, SEEK_SET)) {
         //error while seeking
+        printf("[read] zip_fseek not supported\n");
         return -ENOTSUP;
     }
 

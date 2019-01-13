@@ -12,6 +12,9 @@ struct DirTree* create_node(struct DirTree* son, struct DirTree* next,
     node->next = next;
     node->size = size;
     node->ch = ch;
+    node->open_count = 0;
+    node->file_data = NULL;
+    node->file_data_size = 0;
     return node;
 }
 
@@ -70,6 +73,9 @@ int destroy_tree(struct DirTree* root) {
         if (node != NULL) {
             push_front(&head, node->son);
             push_front(&head, node->next);
+            if (node->file_data != NULL) {
+                free(node->file_data);
+            }
             free(node);
         }
     }
