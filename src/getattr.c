@@ -20,6 +20,7 @@ int fzip_getattr(const char* path, struct stat* stbuf,
     int found = 0;
     // Search as a file
     if (zip_stat(archive, path + 1, 0, &stat) != 0) {
+        printf("[getattr] Zip stat error\n");
         int ze = get_zip_error(archive);
         zip_error_clear(archive);
         switch (ze) {
@@ -35,22 +36,22 @@ int fzip_getattr(const char* path, struct stat* stbuf,
     // Search as a directory - with '/' at the end of 'path'
     if (!found) {
         printf("[getattr] Not found the first time\n");
+        struct DirTree* root = get_data()->tree;
         int len = strlen(path);
         char* dir_path = malloc(len + 2);
         strcpy(dir_path, path);
         dir_path[len] = '/';
         dir_path[len + 1] = '\0';
-        int res = zip_stat(archive, dir_path + 1, 0, &stat);
+        struct DirTree* node = find(root, dir_path + 1);
         free(dir_path);
-        if (res != 0) {
-            int ze = get_zip_error(archive);
-            zip_error_clear(archive);
-            switch (ze) {
-                case ZIP_ER_MEMORY: return -ENOMEM;
-                case ZIP_ER_INVAL: return -EINVAL;
-                case ZIP_ER_NOENT: return -ENOENT;
-                default: exit(EXIT_FAILURE);
-            }
+        if (node == NULL) {
+            printf("[getattr] ENOENT\n");
+            return -ENOENT;
+        } else {
+            printf("[getattr] Found, is directory\n");
+            stbuf->st_mode = S_IFDIR | 0555;
+            stbuf->st_nlink = 2;
+            return 0;
         }
     }
     zip_uint8_t opsys;
@@ -59,6 +60,7 @@ int fzip_getattr(const char* path, struct stat* stbuf,
     zip_file_get_external_attributes(archive, stat.index, 0,
                 &opsys, &attributes);
     if (opsys != ZIP_OPSYS_UNIX) {
+        printf("[getattr] opsys not unix\n");
         return -ENOTSUP;
     }
     printf("[getattr] %d\n", attributes);

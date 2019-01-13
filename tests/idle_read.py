@@ -3,7 +3,7 @@ import time
 
 def main():
     if len(sys.argv) != 4:
-        print("Usage: python3 idle_read.py [path_to_file] [chunk_size] [timeout]")
+        print("Usage: python3 idle_read.py path_to_file chunk_size timeout")
         sys.exit(-1)
 
     with open(sys.argv[1]) as f:
