@@ -14,6 +14,7 @@ def zipdir(path, zipf):
     curr_path = os.getcwd()
     os.chdir(path)
     for root, currdir, files in os.walk("."):
+        zipf.write(root)
         for f in files:
             zipf.write(os.path.join(root, f))
     os.chdir(curr_path)
