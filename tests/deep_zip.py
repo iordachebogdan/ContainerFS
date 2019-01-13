@@ -39,7 +39,7 @@ def main():
     if len(sys.argv) < 4:
         print('Use python3 deep_zip.py depth base num_lines [file_name]')
         sys.exit(-1)
-    depth, base, num_lines = map(int, sys.argv[1:])
+    depth, base, num_lines = map(int, sys.argv[1:4])
     try:
         file_name = sys.argv[4]
     except Exception:
