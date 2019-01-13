@@ -3,7 +3,7 @@
 #include <errno.h>
 
 int fzip_readlink(const char* path, char* buff, size_t len) {
-    printf("Reading link with buffer of size: %ld\n", len);
+    printf("[readlink] Reading link with buffer of size: %ld\n", len);
     zip_t* archive = get_data()->archive;
     zip_file_t* file = zip_fopen(archive, path + 1, 0);
     if (file == NULL) {

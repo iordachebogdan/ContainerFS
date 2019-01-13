@@ -9,6 +9,13 @@
 
 #include "data.h"
 
+#define HELP "USAGE\n\
+\t./zipfs [OPTION] MOUNTPOINT\n\
+\rOPTIONS\n\
+\t--filename=FILENAME (specifies archive location, by default this is set to \'./archive.zip\' \n\
+\t-f (run in the foreground) \n\
+\t-s (run application on a single thread)\n"
+
 struct Options {
     const char* filename;
 };

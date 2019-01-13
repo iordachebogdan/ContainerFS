@@ -9,8 +9,8 @@
 #include "fzip.h"
 
 int main(int argc, char** argv) {
-    if (argc == 0) {
-        printf("\n");
+    if (argc == 1) {
+        printf(HELP);
         return EXIT_SUCCESS;
     }
 
@@ -25,14 +25,11 @@ int main(int argc, char** argv) {
     }
 
     int result;
-    if ((result = create(options.filename, &data))) {
-        goto exit;
+    if (!(result = create(options.filename, &data))) {
+        result = fuse_main(args.argc, args.argv, &FZIP_OPERATIONS, data);
+        fuse_opt_free_args(&args);
     }
 
-    result = fuse_main(args.argc, args.argv, &FZIP_OPERATIONS, data);
-    fuse_opt_free_args(&args);
-
-exit:
     destroy(data);
 
     if (result) {

@@ -19,7 +19,7 @@ make
 - [x] open
 - [x] read
 - [x] readdir
-- [ ] release
+- [x] release
 - [x] init
 
 ## Testing

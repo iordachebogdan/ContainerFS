@@ -58,7 +58,7 @@ int fzip_readdir(const char* path, void* buf, fuse_fill_dir_t filler,
                 fzip_getattr(buff, &st, 0);
                 filler(buf, buff + path_length, &st, 0, 0);
 
-                printf("Filler call: %s\n", buff + path_length);
+                printf("[readdir] Filler call: %s\n", buff + path_length);
             }
         } else {
             if (node->next != NULL) {

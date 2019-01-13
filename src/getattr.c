@@ -6,7 +6,7 @@
 int fzip_getattr(const char* path, struct stat* stbuf,
                  struct fuse_file_info* fi) {
     (void) fi;
-    printf("Getting attributes: %s\n", path);
+    printf("[getattr] Getting attributes: %s\n", path);
     zip_t* archive = get_data()->archive;
     memset(stbuf, 0, sizeof(struct stat));
     if (strcmp(path, "/") == 0) {
@@ -30,11 +30,11 @@ int fzip_getattr(const char* path, struct stat* stbuf,
         }
     } else {
         found = 1;
-        printf("Found the first time\n");
+        printf("[getattr] Found the first time\n");
     }
     // Search as a directory - with '/' at the end of 'path'
     if (!found) {
-        printf("Not found the first time\n");
+        printf("[getattr] Not found the first time\n");
         int len = strlen(path);
         char* dir_path = malloc(len + 2);
         strcpy(dir_path, path);
@@ -61,14 +61,14 @@ int fzip_getattr(const char* path, struct stat* stbuf,
     if (opsys != ZIP_OPSYS_UNIX) {
         return -ENOTSUP;
     }
-    printf("%d\n", attributes);
+    printf("[getattr] %d\n", attributes);
     mode_t mode = (mode_t) ((attributes >> 16) & 0xFFFF);
-    printf("%d\n", mode);
+    printf("[getattr] %d\n", mode);
     if ((mode & S_IFMT) == S_IFDIR) {
         // Read and execute permissions for directories
         stbuf->st_mode = S_IFDIR | 0555;
         stbuf->st_nlink = 2;
-        printf("Directory\n");
+        printf("[getattr] Directory\n");
     } else {
         // Read permissions mainly for other kind of files
         stbuf->st_mode = (mode & S_IFMT) | 0444;
@@ -81,9 +81,9 @@ int fzip_getattr(const char* path, struct stat* stbuf,
     }
     if ((mode & S_IFMT) == S_IFREG) {
         stbuf->st_size = stat.size;
-        printf("Reg file\n");
+        printf("[getattr] Reg file\n");
     }
-    printf("Getattr succes\n");
-    printf("Mode: %d\n", stbuf->st_mode);
+    printf("[getattr] Getattr succes\n");
+    printf("[getattr] Mode: %d\n", stbuf->st_mode);
     return 0;
 }
