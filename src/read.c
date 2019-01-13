@@ -28,7 +28,7 @@ int fzip_read(const char* path, char* buff, size_t size,
 
     printf("[read] File is not stored. Try reading directly\n");
     //skip first offset bytes
-    zip_file_t* file = (zip_file_t*)(fi->fh);
+    zip_file_t* file = fh->file;
     if (offset > 0 && zip_fseek(file, (zip_int64_t)offset, SEEK_SET)) {
         //error while seeking
         printf("[read] zip_fseek not supported\n");

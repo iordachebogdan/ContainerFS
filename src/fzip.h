@@ -37,5 +37,6 @@ int fzip_open(const char*, struct fuse_file_info*);
 int fzip_read(const char*, char*, size_t,
         off_t, struct fuse_file_info*);
 int fzip_readlink(const char*, char*, size_t);
+int fzip_release(const char*, struct fuse_file_info*);
 
 #endif
