@@ -24,7 +24,7 @@ target_link_libraries(dir_tree ${LIBZIP_LIBRARIES})
 
 # Shared data library
 add_library(data STATIC src/data.c)
-target_link_libraries(data dir_tree)
+target_link_libraries(data dir_tree pthread)
 
 # Utility library
 add_library(utility STATIC src/utility.c)
@@ -38,8 +38,8 @@ add_library(fzip STATIC src/fzip.c
                         src/open.c
                         src/readlink.c
                         src/release.c)
-target_link_libraries(fzip ${FUSE3_LIBRARIES} data)
+target_link_libraries(fzip ${FUSE3_LIBRARIES} data pthread)
 
 # Executable
 add_executable(zipfs src/main.c)
-target_link_libraries(zipfs data fzip utility)
+target_link_libraries(zipfs data fzip utility pthread)

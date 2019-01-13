@@ -9,6 +9,11 @@
 #include "fzip.h"
 
 int main(int argc, char** argv) {
+    if (argc == 0) {
+        printf("\n");
+        return EXIT_SUCCESS;
+    }
+
     // Objects that need to be destoyed manually
     struct FzipData* data = NULL;
     struct fuse_args args = FUSE_ARGS_INIT(argc, argv);

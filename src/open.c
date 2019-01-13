@@ -71,8 +71,10 @@ int fzip_open(const char *path, struct fuse_file_info *fi) {
     }
     fh->node = node;
 
+    pthread_mutex_lock(&(get_data()->lock));
     node->open_count += 1;
     if (node->open_count == 1) {
+        pthread_mutex_unlock(&(get_data()->lock));
         node->file_data = (char*)calloc(stat.size, sizeof(char));
         if (node->file_data != NULL) {
             node->file_data_size = stat.size;
@@ -98,6 +100,8 @@ int fzip_open(const char *path, struct fuse_file_info *fi) {
         } else {
             printf("[open] Not enough space for file allocation\n");
         }
+    } else {
+        pthread_mutex_unlock(&(get_data()->lock));
     }
 
     //set file handle

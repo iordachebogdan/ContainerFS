@@ -25,6 +25,13 @@ int create(const char* path, struct FzipData** data_) {
     } else {
         printf("Opened archive: %s\n", path);
     }
+
+    int err = pthread_mutex_init(&(data->lock), NULL);
+    if (err) {
+        printf("Cannot init mutex\n");
+        return err;
+    }
+
     *data_ = data;
     return EXIT_SUCCESS;
 }
@@ -40,6 +47,9 @@ int destroy(struct FzipData* data) {
     if (zip_close(data->archive)) {
         return EXIT_FAILURE;
     }
+    int err = pthread_mutex_destroy(&(data->lock));
+    if (err)
+        return err;
     free(data);
     return EXIT_SUCCESS;
 }
